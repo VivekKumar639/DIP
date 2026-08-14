@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenCV Processing Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: #07090e;
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Canvas background for glowing particles */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Cursor Glow Spotlight */
+        .cursor-glow {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.1), transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            z-index: 1;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        header h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        header p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+
+        /* Ultra-Glassmorphism Upload Card */
+        .upload-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            width: 100%;
+            max-width: 550px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10;
+            margin-bottom: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-card:hover {
+            border-color: rgba(99, 102, 241, 0.5);
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px rgba(99, 102, 241, 0.2);
+        }
+
+        /* File Input Hidden Safely */
+        .file-input {
+            opacity: 0;
+            width: 0.1px;
+            height: 0.1px;
+            position: absolute;
+            z-index: -1;
+        }
+
+        .file-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 16px 32px;
+            border-radius: 14px;
+            color: #e2e8f0;
+            cursor: pointer;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+            font-weight: 600;
+            user-select: none;
+        }
+
+        .file-label:hover {
+            background: rgba(99, 102, 241, 0.25);
+            color: #ffffff;
+            border-color: #6366f1;
+            transform: scale(1.03);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .file-name {
+            display: block;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            color: #a5b4fc;
+            font-weight: 500;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-submit:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 35px rgba(168, 85, 247, 0.5);
+        }
+
+        /* Results Display Grid */
+        .results-container {
+            width: 100%;
+            max-width: 1300px;
+            z-index: 1;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .results-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 35px;
+            color: #f8fafc;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 25px;
+            justify-content: center;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 18px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transform-style: preserve-3d;
+        }
+
+        .card:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .card-img-wrapper {
+            overflow: hidden;
+            border-radius: 14px;
+            margin-bottom: 15px;
+            background: #000;
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 14px;
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover img {
+            transform: scale(1.12);
+        }
+
+        .card h3 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-top: 5px;
+        }
+
+        .card.grey-card:hover { border-color: #94a3b8; box-shadow: 0 15px 35px rgba(148, 163, 184, 0.3); }
+        .card.red-card:hover { border-color: #f87171; box-shadow: 0 15px 35px rgba(248, 113, 113, 0.3); }
+        .card.green-card:hover { border-color: #4ade80; box-shadow: 0 15px 35px rgba(74, 222, 128, 0.3); }
+        .card.blue-card:hover { border-color: #60a5fa; box-shadow: 0 15px 35px rgba(96, 165, 250, 0.3); }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Particle Effect Canvas -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Cursor Follow Spotlight -->
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+    <header>
+        <h1>OpenCV Processing Studio</h1>
+        <p>Real-time RGB & Grayscale Channel Decomposition</p>
+    </header>
+
+    <!-- Upload Form -->
+    <div class="upload-card">
+        <form action="/" method="POST" enctype="multipart/form-data">
+            <input type="file" name="image" id="fileInput" class="file-input" accept="image/*" required>
+            <label for="fileInput" class="file-label">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                Choose Image File
+            </label>
+            <span id="fileName" class="file-name">No file selected</span>
+            <br>
+            <button type="submit" class="btn-submit">Process Image</button>
+        </form>
+    </div>
+
+    <!-- Output Images Grid -->
+    {% if images %}
+    <div class="results-container">
+        <h2 class="results-title">Processed Outputs</h2>
+        <div class="grid-container">
+            
+            <div class="card">
+                <div class="card-img-wrapper">
+                    <img src="{{ images.original }}" alt="Original">
+                </div>
+                <h3>Original Image</h3>
+            </div>
+
+            <div class="card grey-card">
+                <div class="card-img-wrapper">
+                    <img src="{{ images.grey }}" alt="Grayscale">
+                </div>
+                <h3>Grayscale</h3>
+            </div>
+
+            <div class="card red-card">
+                <div class="card-img-wrapper">
+                    <img src="{{ images.red }}" alt="Red Channel">
+                </div>
+                <h3>Red Channel</h3>
+            </div>
+
+            <div class="card green-card">
+                <div class="card-img-wrapper">
+                    <img src="{{ images.green }}" alt="Green Channel">
+                </div>
+                <h3>Green Channel</h3>
+            </div>
+
+            <div class="card blue-card">
+                <div class="card-img-wrapper">
+                    <img src="{{ images.blue }}" alt="Blue Channel">
+                </div>
+                <h3>Blue Channel</h3>
+            </div>
+
+        </div>
+    </div>
+    {% endif %}
+
+    <script>
+        // File selection handling fix
+        const fileInput = document.getElementById('fileInput');
+        const fileNameSpan = document.getElementById('fileName');
+
+        fileInput.addEventListener('change', function() {
+            if (fileInput.files.length > 0) {
+                fileNameSpan.textContent = "Selected: " + fileInput.files[0].name;
+            } else {
+                fileNameSpan.textContent = "No file selected";
+            }
+        });
+
+        // Cursor Spotlight Tracking
+        const glow = document.getElementById('cursorGlow');
+        document.addEventListener('mousemove', (e) => {
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
+
+        // 3D Card Tilt Dynamic Animation
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                card.style.transform = `perspective(1000px) rotateX(${-y / 8}deg) rotateY(${x / 8}deg) translateY(-8px)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+            });
+        });
+
+        // Background Particle Animation System
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const particles = Array.from({ length: 45 }, () => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 2 + 1,
+            speedX: (Math.random() - 0.5) * 0.5,
+            speedY: (Math.random() - 0.5) * 0.5,
+            opacity: Math.random() * 0.5 + 0.2
+        }));
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.x += p.speedX;
+                p.y += p.speedY;
+
+                if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+
+                ctx.fillStyle = `rgba(165, 180, 252, ${p.opacity})`;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+    </script>
+</body>
+</html>
