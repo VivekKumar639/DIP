@@ -40,6 +40,23 @@ histogram_equalization/
 
 For grayscale images, the app calculates the image histogram, forms its cumulative distribution function, and maps pixel intensities across the available range. For colour images, it applies the same method to the HSV Value channel so hue and saturation are retained.
 
+## Results
+
+Histogram equalization improves the visibility of detail in low-contrast images by spreading frequently clustered pixel intensities across a broader range.
+
+| Aspect | Original image | Equalized image |
+| --- | --- | --- |
+| Contrast | Detail may be compressed into a narrow tonal range. | Tonal values are redistributed for stronger contrast. |
+| Histogram | Often concentrated in a limited intensity range. | Spread more broadly across the 0-255 range. |
+| CDF | May contain steep regions where intensities are clustered. | Becomes smoother after intensity remapping. |
+| Colour images | Original hue, saturation, and brightness are preserved. | Only the HSV Value channel is equalized, retaining natural colours. |
+
+After processing, the app presents the original and equalized images alongside their histogram/CDF plots. This makes the contrast improvement and the underlying intensity redistribution easy to evaluate at a glance.
+
+### Save a result
+
+Use **Save Equalized Image** to export the processed image, or **Save Full Output** to create a four-panel comparison containing the original image, original histogram, equalized image, and equalized histogram.
+
 ## License
 
 No license has been selected yet. Add one before publishing if you want to grant others reuse permissions.
