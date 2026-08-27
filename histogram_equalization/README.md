@@ -53,6 +53,22 @@ Histogram equalization improves the visibility of detail in low-contrast images 
 
 After processing, the app presents the original and equalized images alongside their histogram/CDF plots. This makes the contrast improvement and the underlying intensity redistribution easy to evaluate at a glance.
 
+### Visual comparison
+
+**Input image**
+
+![Original waterfall image](results/input.jpg)
+
+**Equalized output**
+
+![Equalized waterfall image](results/equalized_image.png)
+
+**Complete analysis output**
+
+The complete export compares the original and equalized images with their corresponding histogram and CDF plots.
+
+![Histogram equalization result](results/histogram_equalization_output.png)
+
 ### Save a result
 
 Use **Save Equalized Image** to export the processed image, or **Save Full Output** to create a four-panel comparison containing the original image, original histogram, equalized image, and equalized histogram.
