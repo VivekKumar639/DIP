@@ -1,0 +1,13 @@
+# MATLAB editor and autosave files
+*.asv
+*.m~
+*.autosave
+
+# MATLAB build/code-generation output
+slprj/
+codegen/
+*.mex*
+
+# Locally generated application output
+equalized_image.*
+histogram_equalization_output.*
