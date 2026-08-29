@@ -41,9 +41,9 @@ displayPlane = uint8(binaryPlane * 255);
 ```text
 bitslicing/
 ├── ImageBitPlaneSlicing.m                 # MATLAB GUI source code
-├── SampleImage/
+├── sample-images/
 │   └── istockphoto-2089018252-2048x2048.jpg
-├── Bitplane/
+├── bit-planes/
 │   ├── Bit_Plane_7.png                    # Most significant bit plane
 │   ├── Bit_Plane_6.png
 │   ├── Bit_Plane_5.png
@@ -79,7 +79,7 @@ bitslicing/
 
 The included sample is a 2048 × 1365 colour photograph of a waterfall in a forest. It is converted to grayscale internally before bit-plane extraction.
 
-![Sample waterfall image](SampleImage/istockphoto-2089018252-2048x2048.jpg)
+![Sample waterfall image](sample-images/istockphoto-2089018252-2048x2048.jpg)
 
 ## Generated results
 
@@ -94,17 +94,17 @@ The saved outputs show how visual information is distributed across bit position
 
 | Bit Plane 7 (MSB) | Bit Plane 4 | Bit Plane 1 |
 | --- | --- | --- |
-| ![Bit Plane 7](Bitplane/Bit_Plane_7.png) | ![Bit Plane 4](Bitplane/Bit_Plane_4.png) | ![Bit Plane 1](Bitplane/Bit_Plane_1.png) |
+| ![Bit Plane 7](bit-planes/Bit_Plane_7.png) | ![Bit Plane 4](bit-planes/Bit_Plane_4.png) | ![Bit Plane 1](bit-planes/Bit_Plane_1.png) |
 
 All available generated planes:
 
 | Bit 7 | Bit 6 | Bit 5 | Bit 4 |
 | --- | --- | --- | --- |
-| ![Bit 7](Bitplane/Bit_Plane_7.png) | ![Bit 6](Bitplane/Bit_Plane_6.png) | ![Bit 5](Bitplane/Bit_Plane_5.png) | ![Bit 4](Bitplane/Bit_Plane_4.png) |
+| ![Bit 7](bit-planes/Bit_Plane_7.png) | ![Bit 6](bit-planes/Bit_Plane_6.png) | ![Bit 5](bit-planes/Bit_Plane_5.png) | ![Bit 4](bit-planes/Bit_Plane_4.png) |
 
 | Bit 3 | Bit 2 | Bit 1 |
 | --- | --- | --- |
-| ![Bit 3](Bitplane/Bit_Plane_3.png) | ![Bit 2](Bitplane/Bit_Plane_2.png) | ![Bit 1](Bitplane/Bit_Plane_1.png) |
+| ![Bit 3](bit-planes/Bit_Plane_3.png) | ![Bit 2](bit-planes/Bit_Plane_2.png) | ![Bit 1](bit-planes/Bit_Plane_1.png) |
 
 ## Notes
 
