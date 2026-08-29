@@ -9,6 +9,28 @@ A small Flask web application that breaks a colour image into its Red, Green, an
 - Save each generated image as a PNG file.
 - Uses timestamped filenames, so each upload is kept separate.
 
+## Sample Result
+
+Upload an image and the application immediately shows the original image, its grayscale version, and individual RGB channel views. The example below uses a butterfly image.
+
+### Original Image
+
+<img src="static/uploads/1786736061_original.png" alt="Original butterfly image" width="700">
+
+### Processed Output
+
+| Grayscale | Red Channel |
+| :--: | :--: |
+| <img src="static/uploads/1786736061_grey.png" alt="Grayscale output" width="360"> | <img src="static/uploads/1786736061_red.png" alt="Red channel output" width="360"> |
+| The image converted to shades of gray. | Only red intensity is visible. |
+
+| Green Channel | Blue Channel |
+| :--: | :--: |
+| <img src="static/uploads/1786736061_green.png" alt="Green channel output" width="360"> | <img src="static/uploads/1786736061_blue.png" alt="Blue channel output" width="360"> |
+| Only green intensity is visible. | Only blue intensity is visible. |
+
+These images are committed with the project, so the preview is visible directly on GitHub.
+
 ## Tech Stack
 
 - Python
